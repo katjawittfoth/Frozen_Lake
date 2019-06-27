@@ -8,10 +8,11 @@ from IPython.display import clear_output
 
 class QFrozenLakeAgent:
 
-    def __init__(self, num_episodes=500_000, max_steps=200, learning_rate=0.01, gamma=0.9, epsilon=1.0, decay_rate=0.01):
+    def __init__(self, num_episodes=500_000, max_steps=200, learning_rate=0.01,
+                 gamma=0.9, epsilon=1.0, decay_rate=0.01):
         self.env = FrozenLakeEnv()
         state_size = self.env.observation_space.n  # 4x4 ==> 16
-        actions_num = self.env.action_space.n  # four actions {LEFT: 0, DOWN: 1, RIGHT: 2, UP
+        actions_num = self.env.action_space.n  # four actions
         self.q_table = np.zeros((state_size, actions_num))
         self.num_episodes = num_episodes
         self.max_steps = max_steps
@@ -37,20 +38,22 @@ class QFrozenLakeAgent:
 
     def update_q_table(self, state, action):
         """
-        Using Bellman equation updates Q Table with action, state and it's reward.
+        Using Bellman equation updates Q Table with action, state
+        and it's reward.
         """
         new_state, reward, done, _ = self.env.step(action)
 
         self.q_table[state, action] = self.q_table[
-                                          state, action] + self.learning_rate * (
-                                                  reward + self.gamma * np.max(
+                                          state, action] + self.learning_rate \
+                                      * (reward + self.gamma * np.max(
                                               self.q_table[new_state]) -
                                                   self.q_table[state, action])
         return new_state, reward, done
 
     def epsilon_greedy(self, state):
         """
-        Returns the next action by exploration with probability epsilon and exploitation with probability 1-epsilon.
+        Returns the next action by exploration with probability epsilon
+        and exploitation with probability 1-epsilon.
         """
         if np.random.random() <= self.epsilon:
             return self.env.action_space.sample()
@@ -87,7 +90,8 @@ class QFrozenLakeAgent:
                 avg_reward = self.test_matrix(self.q_table, episode)
                 self.avg_rewards.append(avg_reward)
                 if avg_reward > 0.8:
-                    # considered "solved" when the agent get an avg of at least 0.78 over 100 in a row.
+                    # considered "solved" when the agent get an avg of at least
+                    # 0.78 over 100 in a row.
                     print("Frozen Lake solved 🏆🏆🏆")
                     break
 

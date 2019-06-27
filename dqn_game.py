@@ -20,7 +20,8 @@ class DQNFrozenLakeAgent:
         self.Q = tf.matmul(self.x, self.W)
         self.Q_hat = tf.placeholder(shape=[1, 4], dtype=tf.float32)
         self.loss = tf.reduce_sum(tf.square(self.Q_hat - self.Q))
-        self.train = tf.train.GradientDescentOptimizer(learning_rate=0.1).minimize(self.loss)
+        self.train = tf.train.GradientDescentOptimizer(learning_rate=0.1)\
+            .minimize(self.loss)
 
         self.gamma = 0.9
         self.epsilon = 1
@@ -39,7 +40,7 @@ class DQNFrozenLakeAgent:
         for i in range(100):
             state = self.env.reset()
             done = False
-            while done != True:
+            while not done:
                 Q_ = self.session.run(Q, feed_dict={self.x: self.states[state:state + 1]})
                 a = np.argmax(Q_, 1)[0]
 
@@ -52,7 +53,8 @@ class DQNFrozenLakeAgent:
 
     def epsilon_greedy(self, Q_pred):
         """
-        Returns the next action by exploration with probability epsilon and exploitation with probability 1-epsilon.
+        Returns the next action by exploration with probability epsilon and
+        exploitation with probability 1-epsilon.
         """
         if np.random.random() <= self.epsilon:
             return self.env.action_space.sample()
